@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE xml>
+<configuration>
+
+	<appender name="consoleApp"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>DEBUG</level>
+		</filter>
+		<encoder>
+			<pattern>
+				%date{HH:mm:ss.SSS} %-5level[%thread]%logger{56}..%method-%msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="fileInfoApp"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>DENY</onMatch>
+			<onMismatch>ACCEPT</onMismatch>
+		</filter>
+		<encoder>
+			<pattern>
+				%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level[%thread]%logger{56}.%method:%L -%msg%n
+			</pattern>
+		</encoder>
+		<!-- 滚动策略 -->
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- 路径 -->
+			<fileNamePattern>app_log/log/app.other.%d.log</fileNamePattern>
+		</rollingPolicy>
+	</appender>
+
+	<appender name="fileErrorApp"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>ERROR</level>
+		</filter>
+		<encoder>
+			<pattern>
+				%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level[%thread]%logger{56}.%method:%L -%msg%n
+			</pattern>
+		</encoder>
+
+		<!-- 设置滚动策略 -->
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- 路径 -->
+			<fileNamePattern>app_log/log/app.error.%d.log</fileNamePattern>
+
+			<!-- 控制保留的归档文件的最大数量，超出数量就删除旧文件，假设设置每个月滚动， 且<maxHistory> 是1，则只保存最近1个月的文件，删除之前的旧文件 -->
+			<MaxHistory>1</MaxHistory>
+
+		</rollingPolicy>
+	</appender>
+
+	<!-- 设定指定包的日志等级 ERROR WARN INFO DEBUG TRACE -->
+	<logger name="com.sinosoft.affixinfo" level="DEBUG"/>
+	<logger name="org.mybatis" level="DEBUG"/>
+	
+	<root level="INFO">
+		<appender-ref ref="consoleApp" />
+		<appender-ref ref="fileInfoApp" />
+		<appender-ref ref="fileErrorApp" />
+	</root>
+
+</configuration>
